@@ -68,6 +68,9 @@ library(foreign)
 # Read the ARFF file into a data frame
 dutch_df <- read.arff("fairness_dataset/Dutch_census/dutch_census_2001.arff")
 print(names(dutch_df))
+
+df <- read.csv("fairness_dataset/Dutch_census/dutch.csv")
+print(names(df))
 ```
 
 # 3. Your answers to Problem 3.
