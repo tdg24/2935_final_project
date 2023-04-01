@@ -62,15 +62,18 @@ knitr::opts_chunk$set(
 
 # 2. Preliminary results
 
+We acquired the 2001 Dutch Census dataset from the github repository listed in the paper "A survey on datasets for fairness-aware machine learning". We have done little preliminary analysis at this point. Mostly we have been in the planning phase. This data set is relatively balanced in terms of size. The protected class is sex. So clearly the bias will seek to understand the occupational outcome of men and women with similar backgrounds and home life. From the paper, it appears that economic status, education level, sex and age will have a large impact on the outcome of the model.
+
 ```{r}
-library(foreign)
-
-# Read the ARFF file into a data frame
-dutch_df <- read.arff("fairness_dataset/Dutch_census/dutch_census_2001.arff")
-print(names(dutch_df))
-
 df <- read.csv("fairness_dataset/Dutch_census/dutch.csv")
 print(names(df))
+
+print(xtabs(~sex, data=df))
 ```
 
+
+
 # 3. Your answers to Problem 3.
+  a) First in this project we will seek to understand pre, in and post processing techniques that allow researchers to mitigate bias in their data sets and models. We understand that different techniques are best suited to different data sets. The goal of the project is to uncover and address the biases in the data in order to improve upon the results of models in previous works. Clearly this is past data so the biases are in the world. However, we would aim to perform techniques that would have allowed a fairer and more equal prediction of the individuals. 
+  
+  b) The approach singularly may not contain any novel techniques but the effort entirely may. We are seeking to use many different techniques to mitigate bias in two well studied data sets. The main challenges are two fold. The data is not very recent and therefor subject to the results of a more biased and fractioned society than it is today. Secondly, the data set is a relatively small sample size in comparison with the entirety of people in each of the groups (be it Netherlands population and Law School Students). The challenge becomes sampling or augmenting the data to be an accurate view of the groups at that given time. 
