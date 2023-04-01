@@ -19,9 +19,6 @@ output:
     * Project title: {replace this with your project title}
     * Repository: {replace this with your git repository link}
     * Team member(s): {replace the following with your member information}
-Lastname, Firstname (email: PITT EMAIL)
-Lastname, Firstname (email: PITT EMAIL)
-Lastname, Firstname (email: PITT EMAIL)
 
 1. (40%) Extend your abstract, describe your project in more details. It should be 300--500 words in length providing:
     + your project goal, or the problem you plan to work on; 
@@ -54,12 +51,23 @@ knitr::opts_chunk$set(
 
 # 0. Fill the basic information
 
+ - Project title: Biased Against Bias 
+ - Repository: https://github.com/tdg24/2935_final_project
+ - Team member(s): 
+    Gott, Terner (email: tdg24@pitt.edu)
+    Xu, Junchao (email: jux16@pitt.edu)
+
+
 # 1. Extended abstract 
 
 # 2. Preliminary results
 
 ```{r}
-## YOUR CODE HERE
+library(foreign)
+
+# Read the ARFF file into a data frame
+dutch_df <- read.arff("fairness_dataset/Dutch_census/dutch_census_2001.arff")
+print(names(dutch_df))
 ```
 
 # 3. Your answers to Problem 3.
