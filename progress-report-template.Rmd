@@ -59,24 +59,113 @@ knitr::opts_chunk$set(
 
 
 # 1. Extended abstract 
+#A.
+The goal of this project is to uncover biases that are in the Dutch census and Law school data set described in "A survey on datasets for fairness-aware machine learning". We will attempt to employ a few different strategies for each pre-processing, in-processing and post-processing. We will likely attempt some sampling techniques or data augmentation for preprocessing. We have not fully decided on our in and post processing techniques. We need to do some further analysis before those are picked. 
 
-The goal of this project is to uncover biases that are in the Dutch census and Law school data set described in "A survey on datasets for fairness-aware machine learning". We will attempt to employ a few different strategies for each pre-processing, in-processing and post-processing. We will likely attempt some sampling techniques or data augmentation for preprocessing. We have not fully decided on our in and post processing techniques. We need to do some further analysis before those are picked. We believe that this problem is important and worth further study in order to understand the effects that different techniques have on a data set and machine learning model. We aim to understand if the choice for the best techniques is immediately clear or if there is some experimentation needed to uncover this. We also chose two data sets that are very different. The Dutch census is fairly balanced whereas the Law school one is not. Therefor, different techniques would be expected to be best suited for each. Additionally, the Dutch census has hidden variable like the bias of the society that may not play into the results as much as the Law school dataset. The law school data set is a measure of grades and test results. On the other hand the Dutch census has a lot of societal variables that can clearly be attributed to protected classes. 
+#B
+We believe that this problem is important and worth further study in order to understand the effects that different techniques have on a data set and machine learning model. We aim to understand if the choice for the best techniques is immediately clear or if there is some experimentation needed to uncover this. We also chose two data sets that are very different. The Dutch census is fairly balanced whereas the Law school one is not. Therefor, different techniques would be expected to be best suited for each. Additionally, the Dutch census has hidden variable like the bias of the society that may not play into the results as much as the Law school dataset. The law school data set is a measure of grades and test results. On the other hand the Dutch census has a lot of societal variables that can clearly be attributed to protected classes. 
 
+#C.the approach you plan to take, including what data mining tasks you will perform, and what potential techniques you will try:
+
+1.Data pre-processing:
+a. Handle missing values, if any, by imputing, deleting, or applying other techniques.
+b. Encode categorical variables using one-hot encoding or ordinal encoding.
+c. Normalize or standardize numerical variables if necessary.
+
+2.Feature selection:
+a. Identify relevant features for both prediction tasks using correlation analysis, feature importance from a model like Random Forest, or other feature selection techniques.
+b. Remove irrelevant or redundant features to reduce dimensionality and improve model performance.
+
+3.Model selection and training:
+a. Choose appropriate machine learning algorithms for each prediction task. For binary classification we will use logistic regression, decision trees, support vector machines, or ensemble methods such as random forest and gradient boosting. For regression, we will use linear regression, ridge regression, LASSO, and tree-based regression methods.
+b. Split the dataset into training and testing sets, maintaining the distribution of the protected attributes.
+c. Train the selected models on the training set, optimizing the hyper parameters using cross-validation.
+
+4.Model evaluation:
+a. Evaluate the performance of the models using appropriate metrics. For binary classification, use accuracy, precision, recall, F1 score, and AUC-ROC. For regression, use mean absolute error, mean squared error, root mean squared error, and R-squared.
+b. Test the models for fairness with respect to the protected attributes. Use fairness metrics like disparate impact, demographic parity, or equalized odds to ensure the models do not discriminate against certain groups.
+
+5.Model interpretation and explanation:
+a. Analyze the learned model to understand which features have the most impact on the predictions.
+b. Use model-agnostic interpretation techniques like LIME or SHAP to understand how the models make predictions for individual instances.
+
+#D.what dataset you plan to use and how you will get the data:
+
+a.The Dutch Census Dataset, which includes attributes such as sex and age as protected attributes
+b.The Law School Dataset, which includes attributes such as sex and race as protected attributes.
+
+We acquired these two datasets from the github repository listed in the paper "A survey on datasets for fairness-aware machine learning".
 
 # 2. Preliminary results
 
 We acquired the 2001 Dutch Census dataset from the github repository listed in the paper "A survey on datasets for fairness-aware machine learning". We have done little preliminary analysis at this point. Mostly we have been in the planning phase. This data set is relatively balanced in terms of size. The protected class is sex. So clearly the bias will seek to understand the occupational outcome of men and women with similar backgrounds and home life. From the paper, it appears that economic status, education level, sex and age will have a large impact on the outcome of the model.
 
+Glimpse of the Dataset:
 ```{r}
-df <- read.csv("fairness_dataset/Dutch_census/dutch.csv")
-print(names(df))
-
-print(xtabs(~sex, data=df))
+df_dutch <- read.csv("fairness_dataset/Dutch_census/dutch.csv")
+print(names(df_dutch))
+print(xtabs(~sex, data=df_dutch))
+df_dutch[1:10,]
 ```
+Two way table of protected attributes with predict class:
+```{r}
+table(df_dutch$sex,df_dutch$occupation)
+table(df_dutch$age,df_dutch$occupation)
+```
+Plot of the protected attribute age to the predicted class;
+```{r}
+df_dutch%>%ggplot(mapping=aes(x=age,fill=occupation))+
+  geom_histogram()+
+  facet_wrap(~occupation)
+```
+
+Glimpse of the Dataset:
+```{r}
+df_law <- read.csv("fairness_dataset/Law_school/law_school_clean.csv")
+print(names(df_law))
+df_law[1:10,]
+```
+Two way table of protected attributes with predict class:
+```{r}
+table(df_law$male,df_law$pass_bar)
+table(df_law$race,df_law$pass_bar)
+
+table(df_law$male,df_law$decile1b)
+table(df_law$race,df_law$decile1b)
+```
+Plot of distribution of sex and first year grade:
+```{r}
+df_law%>%ggplot(mapping=aes(x=decile1b,fill=race))+
+  geom_histogram()+
+  scale_fill_manual(values=c("#00BFC4", "#F8766D"))+
+  facet_wrap(~race)
+```
+
 
 
 
 # 3. Your answers to Problem 3.
   a) First in this project we will seek to understand pre, in and post processing techniques that allow researchers to mitigate bias in their data sets and models. We understand that different techniques are best suited to different data sets. The goal of the project is to uncover and address the biases in the data in order to improve upon the results of models in previous works. Clearly this is past data so the biases are in the world. However, we would aim to perform techniques that would have allowed a fairer and more equal prediction of the individuals. 
   
-  b) The approach singularly may not contain any novel techniques but the effort entirely may. We are seeking to use many different techniques to mitigate bias in two well studied data sets. The main challenges are two fold. The data is not very recent and therefor subject to the results of a more biased and fractioned society than it is today. Secondly, the data set is a relatively small sample size in comparison with the entirety of people in each of the groups (be it Netherlands population and Law School Students). The challenge becomes sampling or augmenting the data to be an accurate view of the groups at that given time. 
+  b) The approach singularly may not contain any novel techniques but the effort entirely may. We are seeking to use many different techniques to mitigate bias in two well studied data sets. The main challenges are two fold. The data is not very recent and therefor subject to the results of a more biased and fractioned society than it is today. Secondly, the data set is a relatively small sample size in comparison with the entirety of people in each of the groups (be it Netherlands population and Law School Students). The challenge becomes sampling or augmenting the data to be an accurate view of the groups at that given time.
+  
+  c)
+  Performance measures:
+  a. For binary classification, we will use Accuracy,Precision,Recall (sensitivity),F1 score and AUC-ROC.
+  b. For regression, we will use Mean Absolute Error (MAE), Mean Squared Error (MSE), Root Mean Squared Error (RMSE), R-squared
+
+  To evaluate the models based on performance measures above, we will:
+  a. Split the dataset into training and testing sets, maintaining the distribution of the protected attributes.
+  b. Train the selected models and baseline models on the training set.
+  c. Make predictions on the testing set using the trained models.
+  d. Calculate the performance measures for each model and compare them to the baseline methods.
+  e. Choose the best-performing model based on the evaluation metrics, while also considering fairness with respect to the protected attributes.
+  
+  d)We found several papers with similar topics:
+  "Fairness Constraints: Mechanisms for Fair Classification" by Corbett-Davies et al. 
+  "Mitigating Bias in Algorithmic Hiring: Evaluating Claims and Practices" by Chouldechova and Roth.
+  "A Reductions Approach to Fair Classification" by Feldman et al.
+  "Fairness Through Awareness" by Dwork et al.
+   We used Google Scholar to search for papers related to biase mitigation and picked these papers.
+  
+  e)We are currently not sure about how each attributes are related to the predicted class, therefore it's challenging to decide what kind of models we need to train in the beginning. We will first use Explanatory Data Analysis, after this we will start by training simpler models (e.g., logistic regression for classification or linear regression for regression), and then try more complex models (e.g., decision trees, support vector machines, random forest, gradient boosting) if the simpler models don't perform well.
